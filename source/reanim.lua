@@ -3161,7 +3161,7 @@ do
 	local function IsInThumbstickArea(pos)
 		local playerGui = Player:FindFirstChildOfClass("PlayerGui")
 		local touchGui = playerGui and playerGui:FindFirstChild("TouchGui")
-		if not touchGui.Enabled then
+		if not touchGui or not touchGui.Enabled then
 			return false
 		end
 		local touchFrame = touchGui and touchGui:FindFirstChild("TouchControlFrame")
@@ -3176,7 +3176,7 @@ do
 	local function IsInJumpButtonArea(pos)
 		local playerGui = Player:FindFirstChildOfClass("PlayerGui")
 		local touchGui = playerGui and playerGui:FindFirstChild("TouchGui")
-		if not touchGui.Enabled then
+		if not touchGui or not touchGui.Enabled then
 			return false
 		end
 		local touchFrame = touchGui and touchGui:FindFirstChild("TouchControlFrame")
@@ -7292,40 +7292,6 @@ TextChatService.MessageReceived:Connect(function(message)
 end)
 task.wait()
 
-local function GiveFunctionsToFunction(func)
-	local env = b_getfenv(func)
-	env.RandomString = Util.RandomString
-	env.Util_CreateText = UI.CreateText
-	env.Util_CreateButton = UI.CreateButton
-	env.Util_CreateSwitch = UI.CreateSwitch
-	env.Util_CreateTextbox = UI.CreateTextbox
-	env.Util_CreateSlider = UI.CreateSlider
-	env.Util_CreateDropdown = UI.CreateDropdown
-	env.Util_CreateCanvas = UI.CreateCanvas
-	env.Util_CreateScrollCanvas = UI.CreateScrollCanvas
-	env.Util_CreateSeparator = UI.CreateSeparator
-	env.ReanimCamera = Reanimate.Camera
-	env.LimbReanimator = LimbReanimator
-	env.HatReanimator = HatReanimator
-	env.ReanimateShowHitboxes = ReanimateShowHitboxes
-	env.ReanimateFling = ReanimateFling
-	env.SetOverrideMovesetMusic = SetOverrideMovesetMusic
-	env.GetOverrideMovesetMusicTime = GetOverrideMovesetMusicTime
-	env.SetOverrideMovesetMusicTime = SetOverrideMovesetMusicTime
-	env.SetOverrideMovesetMusicSpeed = SetOverrideMovesetMusicSpeed
-	env.SetOverrideDanceMusic = SetOverrideDanceMusic
-	env.GetOverrideDanceMusicTime = GetOverrideDanceMusicTime
-	env.SetOverrideDanceMusicTime = SetOverrideDanceMusicTime
-	env.SetOverrideDanceMusicSpeed = SetOverrideDanceMusicSpeed
-	env.AnimLib = AnimLib
-	env.AssetGetPathFromFilename = AssetGetPathFromFilename
-	env.AssetGetContentId = AssetGetContentId
-	env.ProtectedChat = ProtectedChat
-	env.OnPlayerChatted = OnPlayerChatted
-	env.HiddenGui = SCREENGUI
-	env.FallenPartsDestroyHeight = FallenPartsDestroyHeight
-end
-
 local MovementStyles = {}
 local DanceableDances = {}
 
@@ -7443,10 +7409,12 @@ local function HandleKeybind(key)
 	if table.find(KeybindsPerPage, key) then
 		if CurrentDance then
 			CurrentDance = nil
+			return true
 		else
 			CurrentDance = Keybinds[key]
 			if CurrentDance then
 				Util.Notify(key .. " - " .. CurrentDance.Name)
+				return true
 			end
 		end
 	end
@@ -7455,7 +7423,9 @@ local function HandleKeybind(key)
 		KeybindPaging = (KeybindPaging + 1) % pages
 		Util.Notify("Page " .. (KeybindPaging + 1))
 		RefreshKeybinds()
+		return true
 	end
+	return false
 end
 RefreshKeybinds = function()
 	local pages = math.max(1, 1 + ((#DanceableDances - 1) // #KeybindsPerPage))
@@ -7480,16 +7450,231 @@ RefreshKeybinds = function()
 		end
 	end
 end
-UserInputService.InputBegan:Connect(function(input, typing)
-	if not SaveData.KeybindsEnabled then return end
-	if typing then return end
-	if input.UserInputType == Enum.UserInputType.Keyboard then
-		HandleKeybind(input.KeyCode.Name)
+local ContextActions = {}
+ContextActions._Actions = {}
+ContextActions._ActionsMap = {}
+do
+	local buttonsui = Instance.new("Frame", HiddenGui)
+	buttonsui.BackgroundTransparency = 1
+	buttonsui.Name = Util.RandomString()
+	buttonsui.AnchorPoint = Vector2.new(1, 1)
+	buttonsui.Position = UDim2.new(1, -90, 1, -90)
+	buttonsui.Size = UDim2.new(0, 130, 0, 130)
+	ContextActions._ButtonsGui = buttonsui
+	local actions, actionsmap = ContextActions._Actions, ContextActions._ActionsMap
+	function ContextActions:RunBinding(caac, input)
+		local s, result = xpcall(caac.Callback, function(m)
+			warn(debug.traceback("Uhhhhhh :: Custom ContextActions Error - " .. m))
+		end, caac.Name, input.UserInputState, input)
+		if s then
+			if result == Enum.ContextActionResult.Sink then
+				return true
+			end
+		end
+		return false
 	end
+	function ContextActions:OnInput(input)
+		for i=#actions, 1, -1 do
+			local caac = actions[i]
+			local exec = false
+			for _,v in caac.Inputs do
+				if v == input.UserInputType then
+					exec = true
+					break
+				end
+				if input.UserInputType == Enum.UserInputType.Keyboard then
+					if v == input.KeyCode then
+						exec = true
+						break
+					end
+				end
+			end
+			if exec then
+				if ContextActions:RunBinding(caac, input) then return end
+			end
+		end
+	end
+	function ContextActions:UnbindAllActions()
+		table.clear(actions)
+		table.clear(actionsmap)
+		ContextActions._ButtonsGui:ClearAllChildren()
+	end
+	function ContextActions:BindAction(name, callback, touchButton, first, ...)
+		assert(type(name) == "string")
+		assert(type(callback) == "function")
+		assert(type(touchButton) == "boolean")
+		assert(first ~= nil)
+		ContextActions:UnbindAction(name)
+		caac = {
+			Name = name,
+			Callback = callback,
+			Inputs = {first, ...}
+		}
+		table.insert(actions, caac)
+		actionsmap[name] = caac
+		if touchButton then
+			local button = Instance.new("ImageButton", buttonsui)
+			button.Name = Util.RandomString()
+			button.Position = UDim2.new(0, 0, 0, 0)
+			button.Size = UDim2.new(0, 32, 0, 32)
+			button.Image = "https://www.roblox.com/asset/?id=97166444"
+			button.BackgroundTransparency = 1
+			local txt = Instance.new("TextLabel", button)
+			txt.Name = "Title"
+			txt.Position = UDim2.new(0, 0, 0, 0)
+			txt.Size = UDim2.new(1, 0, 1, 0)
+			txt.BackgroundTransparency = 1
+			txt.Font = Enum.Font.SourceSansBold
+			txt.TextSize = 18
+			txt.TextColor3 = Color3.new(1, 1, 1)
+			txt.TextStrokeTransparency = 0
+			txt.TextStrokeColor3 = Color3.new(0, 0, 0)
+			txt.Text = ""
+			local icon = Instance.new("ImageLabel", button)
+			icon.Name = "Icon"
+			icon.Position = UDim2.new(0, 0, 0, 0)
+			icon.Size = UDim2.new(1, 0, 1, 0)
+			icon.BackgroundTransparency = 1
+			icon.Image = ""
+			button.InputBegan:Connect(function(input)
+				ContextActions:RunBinding(caac, input)
+			end)
+			button.InputChanged:Connect(function(input)
+				ContextActions:RunBinding(caac, input)
+			end)
+			button.InputEnded:Connect(function(input)
+				ContextActions:RunBinding(caac, input)
+			end)
+			caac.TouchButton = button
+		end
+	end
+	function ContextActions:UnbindAction(name)
+		local caac = actionsmap[name]
+		if caac then
+			if caac.TouchButton then
+				caac.TouchButton:Destroy()
+			end
+			local i = table.find(actions, caac)
+			if i then table.remove(actions, i) end
+		end
+	end
+	function ContextActions:SetTitle(name, title)
+		local caac = actionsmap[name]
+		if caac then
+			local button = caac.TouchButton
+			if button then
+				if button.Icon.Image == "" then
+					button.Title.Visible = true
+					button.Icon.Visible = false
+				else
+					button.Title.Visible = true
+					button.Icon.Visible = false
+				end
+				button.Title.Text = title
+			end
+		end
+	end
+	function ContextActions:SetImage(name, image)
+		local caac = actionsmap[name]
+		if caac then
+			local button = caac.TouchButton
+			if button then
+				if image then
+					button.Icon.Image = image
+				else
+					button.Icon.Image = ""
+				end
+				if button.Icon.Image == "" then
+					button.Title.Visible = true
+					button.Icon.Visible = false
+				else
+					button.Title.Visible = true
+					button.Icon.Visible = false
+				end
+			end
+		end
+	end
+	function ContextActions:SetPosition(name, position)
+		local caac = actionsmap[name]
+		if caac then
+			local button = caac.TouchButton
+			if button then
+				button.Position = position
+			end
+		end
+	end
+	AddToRenderStep(function()
+		local playerGui = Player:FindFirstChildOfClass("PlayerGui")
+		local touchGui = playerGui and playerGui:FindFirstChild("TouchGui")
+		if not touchGui or not touchGui.Enabled then
+			buttonsui.Visible = false
+			return
+		end
+		local touchFrame = touchGui and touchGui:FindFirstChild("TouchControlFrame")
+		local jumpButton = touchFrame and touchFrame:FindFirstChild("JumpButton")
+		if not jumpButton then
+			buttonsui.Visible = false
+			return
+		end
+		local pos = jumpButton.AbsolutePosition
+		buttonsui.Visible = true
+		buttonsui.Position = UDim2.fromOffset(pos.X - 35, pos.Y - 35)
+	end)
+end
+UserInputService.InputBegan:Connect(function(input)
+	if UserInputService:GetFocusedTextBox() then return end
+	if SaveData.KeybindsEnabled then
+		if input.UserInputType == Enum.UserInputType.Keyboard then
+			if HandleKeybind(input.KeyCode.Name) then return end
+		end
+	end
+	ContextActions:OnInput(input)
+end)
+UserInputService.InputChanged:Connect(function(input)
+	if UserInputService:GetFocusedTextBox() then return end
+	ContextActions:OnInput(input)
+end)
+UserInputService.InputEnded:Connect(function(input)
+	if UserInputService:GetFocusedTextBox() then return end
+	ContextActions:OnInput(input)
 end)
 
 if type(SaveData.ModuleConfigs) ~= "table" then
 	SaveData.ModuleConfigs = {}
+end
+local function GiveFunctionsToFunction(func)
+	local env = b_getfenv(func)
+	env.RandomString = Util.RandomString
+	env.Util_CreateText = UI.CreateText
+	env.Util_CreateButton = UI.CreateButton
+	env.Util_CreateSwitch = UI.CreateSwitch
+	env.Util_CreateTextbox = UI.CreateTextbox
+	env.Util_CreateSlider = UI.CreateSlider
+	env.Util_CreateDropdown = UI.CreateDropdown
+	env.Util_CreateCanvas = UI.CreateCanvas
+	env.Util_CreateScrollCanvas = UI.CreateScrollCanvas
+	env.Util_CreateSeparator = UI.CreateSeparator
+	env.ReanimCamera = Reanimate.Camera
+	env.LimbReanimator = LimbReanimator
+	env.HatReanimator = HatReanimator
+	env.ReanimateShowHitboxes = ReanimateShowHitboxes
+	env.ReanimateFling = ReanimateFling
+	env.SetOverrideMovesetMusic = SetOverrideMovesetMusic
+	env.GetOverrideMovesetMusicTime = GetOverrideMovesetMusicTime
+	env.SetOverrideMovesetMusicTime = SetOverrideMovesetMusicTime
+	env.SetOverrideMovesetMusicSpeed = SetOverrideMovesetMusicSpeed
+	env.SetOverrideDanceMusic = SetOverrideDanceMusic
+	env.GetOverrideDanceMusicTime = GetOverrideDanceMusicTime
+	env.SetOverrideDanceMusicTime = SetOverrideDanceMusicTime
+	env.SetOverrideDanceMusicSpeed = SetOverrideDanceMusicSpeed
+	env.AnimLib = AnimLib
+	env.ContextActions = ContextActions
+	env.AssetGetPathFromFilename = AssetGetPathFromFilename
+	env.AssetGetContentId = AssetGetContentId
+	env.ProtectedChat = ProtectedChat
+	env.OnPlayerChatted = OnPlayerChatted
+	env.HiddenGui = SCREENGUI
+	env.FallenPartsDestroyHeight = FallenPartsDestroyHeight
 end
 local function GetModuleHash(m)
 	if m.Hash then return m.Hash end
