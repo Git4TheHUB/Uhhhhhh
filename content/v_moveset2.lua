@@ -6254,9 +6254,9 @@ AddModule(function()
 			end
 			local hit = MouseHit()
 			AuraEffect(5, 0, "Add", CFrame.new(hit) * CFrame.new(0, -2.9, 0), 0, 0, 0, 1, Color3.new(1, 1, 1), Vector3.zero, "Sphere")
-			AuraEffect(10, 0, "Add", CFrame.new(hit) * CFrame.new(0, -2.9, 0), 0, 0, 0, 2, Color3.new(1, 1, 1), Vector3.zero, "Sphere", "93865949235180", 0.7)
+			AuraEffect(10, 0, "Add", CFrame.new(hit) * CFrame.new(0, -2.9, 0), 0, 0, 0, 2, Color3.new(1, 1, 1), Vector3.zero, "Sphere")
 			AuraEffect(1, 0, "Add", CFrame.new(hit), 1, 100000, 1, 0.5, Color3.new(1, 1, 1), Vector3.zero, "Sphere")
-			AuraEffect(1, 0, "Add", CFrame.new(hit), 1, 1, 1, 0.75, Color3.new(1, 1, 1), Vector3.zero, "Sphere")
+			AuraEffect(1, 0, "Add", CFrame.new(hit), 1, 1, 1, 0.75, Color3.new(1, 1, 1), Vector3.zero, "Sphere", "93865949235180", 0.7)
 			Attack(hit, 14.5)
 			animationOverride = function(timingsine, rt, nt, rst, lst, rht, lht, hat)
 				rt = RCF * CFrame.new(0, 0, -0.4 + 0.1 * math.cos(timingsine / 20)) * CFrame.Angles(math.rad(-2 + 2 * math.cos(timingsine / 12)), 0, 0)
@@ -6327,7 +6327,7 @@ AddModule(function()
 				return rt, nt, rst, lst, rht, lht, hat, 8
 			end
 			local grow = TweenInfo.new(0.8, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
-			TweenService:Create(mesh, grow, {Size = Vector3.new(45.65, 45.65, 45.65)}):Play()
+			TweenService:Create(mesh, grow, {Scale = Vector3.new(45.65, 45.65, 45.65)}):Play()
 			TweenService:Create(weld, grow, {C1 = CFrame.new(0, -17.6 * scale, 1.4 * scale)}):Play()
 			task.wait(1)
 			if not rootu:IsDescendantOf(workspace) then
@@ -6339,9 +6339,9 @@ AddModule(function()
 				"BLAMOOO",
 				"HA",
 			})
-			AuraEffect(1, 0, "Add", root.CFrame * CFrame.new(0, -1.9 * scale, -17 * scale), 1, 1, 1, 0.75, Color3.new(1, 1, 1), Vector3.zero, "Sphere")
+			AuraEffect(1, 0, "Add", root.CFrame * CFrame.new(0, -1.9 * scale, -17 * scale), 1, 1, 1, 0.75, Color3.new(1, 1, 1), Vector3.zero, "Sphere", "93865949235180", 0.5)
 			AuraEffect(5, 0, "Add", root.CFrame * CFrame.new(0, -1.9 * scale, -17 * scale), 0, 0, 0, 1, Color3.new(1, 1, 1), Vector3.zero, "Sphere")
-			AuraEffect(10, 0, "Add", root.CFrame * CFrame.new(0, -1.9 * scale, -17 * scale), 0, 0, 0, 2, Color3.new(1, 1, 1), Vector3.zero, "Sphere", "93865949235180", 0.5)
+			AuraEffect(10, 0, "Add", root.CFrame * CFrame.new(0, -1.9 * scale, -17 * scale), 0, 0, 0, 2, Color3.new(1, 1, 1), Vector3.zero, "Sphere")
 			Attack(rootu.CFrame * (Vector3.new(0, -1.9, -20) * scale), 22.5 * scale)
 			animationOverride = function(timingsine, rt, nt, rst, lst, rht, lht, hat)
 				rt = RCF * CFrame.new(0, 0, -0.1 + 0.1 * math.cos(timingsine / 20)) * CFrame.Angles(math.rad(90 + 2 * math.cos(timingsine / 12)), 0, 0)
