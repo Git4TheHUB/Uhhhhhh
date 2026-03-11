@@ -5697,7 +5697,7 @@ AddModule(function()
 		local sound = Instance.new("Sound")
 		sound.Name = tostring(id)
 		sound.SoundId = "rbxassetid://" .. id
-		sound.Volume = 5
+		sound.Volume = 2
 		sound.Pitch = pitch
 		sound.EmitterSize = 100
 		sound.Parent = parent
@@ -6248,10 +6248,10 @@ AddModule(function()
 				hat = CFrame.new(0, m.HeadScale / 2 + 1.5 + 0.2 * math.cos(timingsine / 20), 0) * CFrame.Angles(math.rad(90), 0, 0)
 				return rt, nt, rst, lst, rht, lht, hat, 12
 			end
-			task.wait(0.5)
+			task.wait(0.2)
 			local hit = MouseHit()
-			AuraEffect(1, 0, "Add", CFrame.new(hit), 0, 0, 0, 1, Color3.new(1, 1, 1), Vector3.zero, "Sphere", "115974234844378", 1)
-			task.wait(0.5)
+			AuraEffect(1, 0, "Add", CFrame.new(hit), 0, 0, 0, 0, Color3.new(1, 1, 1), Vector3.zero, "Sphere", "115974234844378", 1)
+			task.wait(0.8)
 			if not rootu:IsDescendantOf(workspace) then
 				return
 			end
