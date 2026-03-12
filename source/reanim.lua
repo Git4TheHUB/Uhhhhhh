@@ -220,8 +220,16 @@ Util.ForceTextSize = function(inst)
 	if inst:IsA("TextLabel") then
 		local original = inst.TextSize
 		local conn conn = RunService.PreRender:Connect(function()
-			local size = TextService:GetTextSize("TEST", original, inst.Font, Vector2.new(math.huge, math.huge))
-			inst.TextSize = math.floor((original / size.Y) * original)
+			local size = GuiService.PreferredTextSize.Name
+			if size == "Medium" then
+				inst.TextSize = original
+			elseif size == "Large" then
+				inst.TextSize = original - 4
+			elseif size == "Larger" then
+				inst.TextSize = original - 9
+			elseif size == "Largest" then
+				inst.TextSize = original - 14
+			end
 		end)
 		Util.LinkDestroyI2C(inst, conn)
 	end
