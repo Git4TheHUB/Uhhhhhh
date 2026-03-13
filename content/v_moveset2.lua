@@ -6516,6 +6516,7 @@ AddModule(function()
 		local sin7 = math.sin(timingsine / 7)
 		local sin20 = math.sin(timingsine / 20)
 		local sin30 = math.sin(timingsine / 30)
+		hat = CFrame.new(0, m.HeadScale / 2 + 0.2 * cos20, 0)
 		if onground then
 			if torsovelocity < 1 then
 				change = 0.5
@@ -6525,7 +6526,6 @@ AddModule(function()
 				lst = CFrame.new(-1, -0.9 - 0.1 * cos20, 0) * CFrame.Angles(math.rad(-2 + 2 * cos12), math.rad(-74), 0) * CFrame.Angles(math.rad(-2.5), 0, math.rad(-4))
 				rht = CFrame.new(1, 0.3 + 0.06 * sin20, 0.6) * CFrame.Angles(math.rad(-35), math.rad(-25 + 2.5 * sin20), math.rad(-55 + 2.5 * sin20))
 				lht = CFrame.new(-1, 0.3 + 0.06 * sin20, 0.6) * CFrame.Angles(math.rad(-35), math.rad(25 + 2.5 * sin20), math.rad(55 + 2.5 * sin20))
-				hat = CFrame.new(0, m.HeadScale / 2 + 0.2 * cos20, 0)
 			elseif torsovelocity < 25 then
 				change = 1
 				rt = RCF * CFrame.new(0, 0, -0.175 + 0.025 * cos35 + -sin35 / 7) * CFrame.Angles(math.rad(3 - 2.5 * cos35), torsorvelocityy / 75, math.rad(3 * cos7))
@@ -6534,9 +6534,9 @@ AddModule(function()
 				lst = CFrame.new(-1, -0.8 + 0.5 * cos7 / 2, -0.6 * cos7 / 2) * CFrame.Angles(math.rad(-15 + 5 * cos7) + torsorvelocityy / 75 + sin7 / 2.5, math.rad(-90 - 3 * cos7), 0) * CFrame.Angles(math.rad(-2 * cos7), 0, 0)
 				rht = CFrame.new(1, 0.3 + 0.02 * sin20, 0.6) * CFrame.Angles(math.rad(-35), math.rad(-25 + 2.5 * sin20), math.rad(-55 + 2.5 * sin20))
 				lht = CFrame.new(-1, 0.3 + 0.02 * sin20, 0.6) * CFrame.Angles(math.rad(-35), math.rad(25 + 2.5 * sin20), math.rad(55 + 2.5 * sin20))
-				hat = CFrame.new(0, m.HeadScale / 2 + 0.2 * cos20, 0)
 			else
 				change = 1.35
+				animationspeed = 16
 				rt = RCF * CFrame.new(0, 0, -0.175 + 0.025 * cos35 + -sin35 / 7) * CFrame.Angles(math.rad(26 - 4.5 * cos35), torsorvelocityy / 75, math.rad(15 * cos7))
 				nt = NCF * CFrame.Angles(math.rad(-2.5 * sin20), 0, torsorvelocityy / 15)
 				rst = CFrame.new(1, -0.925 - 0.5 * cos7 / 2, 0.7 * cos7 / 2) * CFrame.Angles(math.rad(-15 - 55 * cos7) - torsorvelocityy / 75 + -sin7 / 2.5, math.rad(90 - 0.1 * cos7), 0) * CFrame.Angles(math.rad(0.1 * cos7), 0, 0)
