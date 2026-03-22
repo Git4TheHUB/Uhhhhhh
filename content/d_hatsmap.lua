@@ -1,3 +1,19 @@
+-- Uhhhhhh's hat map
+
+--[[
+
+Sin dragon hats found in v_movesets2.lua (colon read this) (not in particular order)
+14864581977
+14125168816
+14500805111
+14500822536
+105496049639675
+95768703732477
+14124334543
+13455287601
+
+]]
+
 local HatMeshDatabase = {
 	-- Heads
 	{MeshId = "11601535857", TextureId = "", Offset = CFrame.Angles(0, 3.14, 0), For = "Head"},
