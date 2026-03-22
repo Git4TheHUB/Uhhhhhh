@@ -6981,12 +6981,12 @@ AddModule(function()
 				rst = CFrame.new(1, 0.4, 0) * CFrame.fromEulerAngles(0, 0.785 + 0.698 * math.sin(timingsine * 8), 1.571 + 0.698 * math.sin((timingsine + 0.125) * 8))
 				rt = CFrame.fromEulerAngles(-1.396, 0.052 * math.sin(timingsine * 8), 3.142 + 0.175 * math.sin(timingsine * 8))
 			else
-				rt = RCF * CFrame.new(0, 0, -0.1 + 0.1 * cos20) * CFrame.Angles(math.rad(24), 0, 0)
-				nt = NCF * CFrame.Angles(math.rad(12.5 * sin30), 0, 0)
-				rst = CFrame.new(1, -1 - 0.1 * cos20, -0.3) * RHCF * CFrame.Angles(math.rad(-3.5), 0, 0)
-				lst = CFrame.new(-1, -0.8 - 0.1 * cos20, -0.3) * LHCF * CFrame.Angles(math.rad(-3.5), 0, 0)
-				rht = CFrame.new(1.5, 0.5 + 0.02 * sin20, 0) * CFrame.Angles(math.rad(65), math.rad(-0.6), math.rad(45 + 4.5 * sin20))
-				lht = CFrame.new(-1.5, 0.5 + 0.02 * sin20, 0) * CFrame.Angles(math.rad(55), math.rad(-0.6), math.rad(-45 - 4.5 * sin20))
+				rt = CFrame.new(0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 1, 0) * CFrame.new(0, 0, -0.1 + 0.1 * math.cos(timingsine * 3)) * CFrame.Angles(math.rad(24), 0, 0)
+				nt = CFrame.new(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 1, 0) * CFrame.Angles(math.rad(12.5 * math.cos(timingsine * 2)), 0, 0)
+				rht = CFrame.new(1, -1 - 0.1 * math.cos(timingsine * 3), -0.3) * CFrame.Angles(0, 1.6, 0) * CFrame.Angles(math.rad(-3.5), 0, 0)
+				lht = CFrame.new(-1, -0.8 - 0.1 * math.cos(timingsine * 3), -0.3) * CFrame.Angles(0, -1.6, 0) * CFrame.Angles(math.rad(-3.5), 0, 0)
+				rst = CFrame.new(1.5, 0.5 + 0.02 * math.sin(timingsine * 3), 0) * CFrame.Angles(math.rad(65), math.rad(-0.6), math.rad(45 + 4.5 * math.sin(timingsine * 3)))
+				lst = CFrame.new(-1.5, 0.5 + 0.02 * math.sin(timingsine * 3), 0) * CFrame.Angles(math.rad(55), math.rad(-0.6), math.rad(-45 - 4.5 * math.sin(timingsine * 3)))
 			end
 			return rt, nt, rst, lst, rht, lht, 16
 		end,
@@ -7319,12 +7319,12 @@ AddModule(function()
 			hum.WalkSpeed = walkspeed * scale
 			hum.JumpPower = 50 * scale
 			if hum.Jump then
-				flysound.Volume = math.min(1, flysound.Volume + dt * 4)
+				flysound.Volume = math.min(10, flysound.Volume + dt * 40)
 				root.Velocity += Vector3.new(0, workspace.Gravity + 50, 0) * dt
 				MagicSphere(Vector3.one * scale, 10, torso.CFrame * CFrame.new(-0.5 * scale, -3 * scale, 0), Color3.new(1, 0.5, 0), Vector3.new(-0.1, 0.2, -0.1) * scale)
 				MagicSphere(Vector3.one * scale, 10, torso.CFrame * CFrame.new(0.5 * scale, -3 * scale, 0), Color3.new(1, 0.5, 0), Vector3.new(-0.1, 0.2, -0.1) * scale)
 			else
-				flysound.Volume = math.max(0, flysound.Volume - dt * 4)
+				flysound.Volume = math.max(0, flysound.Volume - dt * 40)
 			end
 			flysound.Playing = flysound.Volume > 0.05
 			if lastfly ~= hum.Jump then
