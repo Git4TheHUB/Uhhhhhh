@@ -3616,6 +3616,7 @@ Reanimate.CreateCharacter = function(InitCFrame)
 	Reanimate.Camera.CFrame, Reanimate.Camera.Focus = Camera.CFrame, Camera.Focus
 	Reanimate.Camera:OnReset()
 	RC = CreateHumanoidCharacter()
+	RC.ModelStreamingMode = "Persistent"
 	local ltmparts = Reanimate.CharacterLTMs
 	table.clear(ltmparts)
 	local function OnDescendant(v)
