@@ -7038,27 +7038,29 @@ AddModule(function()
 	end
 	local function BootsEffect(part, typ)
 		local COL = Color3.new(1, 0.5, 0)
-		local ground = PhysicsRaycast(part.CFrame * Vector3.new(0, -0.9 * scale, 0), part.CFrame.UpVector * 4)
-		local dist = ground and (ground.Distance / 4) or 1
+		local ra = 8
+		local inf = part.CFrame:VectorToObjectSpace(part.Velocity) * 0.9
+		local ground = PhysicsRaycast(part.CFrame * Vector3.new(0, -0.9 * scale, 0), part.CFrame.UpVector * -ra)
+		local dist = ground and (ground.Distance / ra) or 1
 		if typ == "IGNITION" then
 			MagicSphere(
 				Vector3.zero, 5, part.CFrame * CFrame.new(0, -1 * scale, 0), COL,
 				Vector3.new(2, 0.1, 2):Lerp(Vector3.new(2, 0.4, 2), dist) * scale,
-				Vector3.new(0, 0, 0):Lerp(Vector3.new(0, -0.2, 0), dist) * scale
+				Vector3.new(0, 0, 0):Lerp(Vector3.new(0, -0.4, 0), dist) * scale + inf
 			)
 		end
 		if typ == "THRUST" then
 			MagicSphere(
 				Vector3.one * scale, 10, part.CFrame * CFrame.new(0, -1 * scale, 0), COL,
 				Vector3.new(0.5, 0.1, 0.5):Lerp(Vector3.new(-0.1, 0.2, -0.1), dist) * scale,
-				Vector3.new(0, 0, 0):Lerp(Vector3.new(0, -0.2, 0), dist) * scale
+				Vector3.new(0, 0, 0):Lerp(Vector3.new(0, -0.4, 0), dist) * scale + inf
 			)
 		end
 		if ground then
 			MagicSphere(
-				Vector3.new(0, 0.05, 0) * scale, 20, CFrame.lookAlong(ground.Position, ground.Normal), COL,
+				Vector3.new(0, 0.05, 0) * scale, 20, CFrame.lookAlong(ground.Position, ground.Normal), Color3.new(1, 1, 1),
 				Vector3.new(1, 0, 1):Lerp(Vector3.new(0, 0, 0), dist) * scale,
-				Vector3.new(0, 0, 0), dist
+				Vector3.new(0, 0, 0), dist * 0.3 + 0.7
 			)
 		end
 	end
