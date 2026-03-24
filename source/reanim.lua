@@ -126,6 +126,18 @@ do
 	end
 end
 
+-- WILL THIS FIX CRASHES IDK ????????
+local pcall = function(func, ...)
+	return pcall(function(...)
+		func(...)
+	end, ...)
+end
+local xpcall = function(func, ...)
+	return xpcall(function(...)
+		func(...)
+	end, ...)
+end
+
 b_getfenv = getfenv -- "loadstring marks the env unsafe"
 
 local Player = Players.LocalPlayer

@@ -5,6 +5,8 @@
  - ModelStreamingMode = Persistent as an attempt to prevent the character from freezing in StreamingEnabled games while on hat reanimation with loop respawn
    (well the above one didnt work, so i instead went for ReplicationFocus = workspace)
  - Added modules reloading
+ - Added init logs, for debugging problems
+ - Random fix i came up with to "reduce crashes", lets see how it goes
 # Version 1.0.5 BETA
  - Fixed Patchma-like netless, now it'll only be "jittery" when you move (like in the REAL)
  - RepRootPart property is now available for hat overrides! (hat orbit is now possible)
