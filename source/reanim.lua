@@ -8386,7 +8386,8 @@ local function getgithubraw(path)
 	end
 	return nil
 end
-local function ForceModuleReload()
+local function ForceModuleReload(force)
+	IsUhhhhhhFullyLoaded = false
 	ClearModules()
 	Util.Notify("Checking SHA1 Hashes...")
 	local filesofbuiltins = {"v_moveset1.lua", "v_moveset2.lua", "v_moveset3.lua", "v_dance1.lua", "v_dance2.lua", "d_limbmap.lua", "d_hatsmap.lua"}
@@ -8435,6 +8436,7 @@ local function ForceModuleReload()
 		local exist = false
 		local s, a = pcall(isfile, path)
 		if s and a then exist = true end
+		if force then exist = false end
 		if not exist then
 			local content = getgithubraw(x)
 			if content then
@@ -8452,6 +8454,7 @@ local function ForceModuleReload()
 		local s, a = pcall(isfile, path)
 		if s and a then exist = true end
 		if wasold then exist = false end
+		if force then exist = false end
 		local data = ""
 		if exist then
 			data = readfile(path)
@@ -8499,8 +8502,8 @@ local function ForceModuleReload()
 	end
 	RefreshKeybinds()
 	Util.Notify("Init complete")
+	IsUhhhhhhFullyLoaded = true
 end
-ForceModuleReload()
 UI.CreateSeparator(MainPage)
 UI.CreateText(MainPage, "<b>MODULES MANAGEMENT</b>", 15, Enum.TextXAlignment.Center)
 UI.CreateButton(MainPage, "Reload Modules", 20).Activated:Connect(function()
@@ -8514,7 +8517,7 @@ UI.CreateButton(MainPage, "Reload Modules", 20).Activated:Connect(function()
 	tween.Completed:Connect(function()
 		CracktroFrame.Interactable = true
 	end)
-	ForceModuleReload()
+	ForceModuleReload(true)
 end)
 UI.CreateText(MainPage, "\n\n\n<b>DANGER ZONE</b>", 15, Enum.TextXAlignment.Center)
 local clearcontenthash, clearcontenthashtext = UI.CreateButton(MainPage, "CLEAR ALL DOWNLOADED CONTENT", 15)
@@ -8539,4 +8542,4 @@ clearcontenthash.Activated:Connect(function()
 	end
 end)
 
-IsUhhhhhhFullyLoaded = true
+ForceModuleReload(false)
